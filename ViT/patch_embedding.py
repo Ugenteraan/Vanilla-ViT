@@ -13,21 +13,21 @@ class PatchEmbedding(nn.Module):
        In this implementation, we will be using Conv2d to linearly project each patch without overlapping.
     '''
 
-    def __init__(self, patch_size, image_depth, embedding_dim, device):
+    def __init__(self, patch_size, image_depth, patch_embedding_dim, device):
         
         super(PatchEmbedding, self).__init__()
 
-        self.patch_projection = nn.Conv2d(image_depth,
-                                          embedding_dim,
+        self.patch_projection = nn.Conv2d(in_channels=image_depth,
+                                          out_channels=patch_embedding_dim,
                                           kernel_size=patch_size,
                                           stride=patch_size).to(device)
 
     def forward(self, x):
         
         
-        x = self.patch_projection(x) #The output will be [B, embedding_dim, height * number_patches, width*num_patches][
+        x = self.patch_projection(x) #The output will be [B, patch_embedding_dim, height * number_patches, width*num_patches][
         x = x.flatten(2) #this will flatten the height and width patches at the last 2 dimensions.
-        x = x.transpose(1,2) #we want the tensor to be [B, num_patches, embedding_dim]
+        x = x.transpose(1,2) #we want the tensor to be [B, num_patches, patch_embedding_dim]
 
 
         
